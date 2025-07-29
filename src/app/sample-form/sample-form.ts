@@ -14,6 +14,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { NgxMaskDirective } from 'ngx-mask';
 import { IbanInputComponent } from '../iban-input/iban-input';
 
 interface Country {
@@ -40,6 +41,7 @@ interface Country {
     MatNativeDateModule,
     MatSliderModule,
     MatSnackBarModule,
+    NgxMaskDirective,
     IbanInputComponent
   ],
   templateUrl: './sample-form.html',
@@ -67,6 +69,11 @@ export class SampleFormComponent {
     { name: 'Travel', checked: false }
   ];
 
+  ibanPatterns = {
+    'A': { pattern: new RegExp('[A-Z]') },
+    '0': { pattern: new RegExp('[0-9]') }
+  };
+
   constructor(
     private fb: FormBuilder,
     private snackBar: MatSnackBar
@@ -85,7 +92,8 @@ export class SampleFormComponent {
       terms: [false, Validators.requiredTrue],
       rating: [3],
       salary: [50000, [Validators.min(0), Validators.max(1000000)]],
-      iban: ['', Validators.required]
+      iban: ['', Validators.required],
+      ibanMask: ['', Validators.required]
     });
   }
 

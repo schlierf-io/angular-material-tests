@@ -144,10 +144,28 @@
             <app-iban-input 
               class="form-field"
               formControlName="iban"
-              label="German IBAN"
+              label="German IBAN (Custom Component)"
               placeholder="DE89 3704 0044 0532 0130 00"
               [required]="true">
             </app-iban-input>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>German IBAN (ngx-mask)</mat-label>
+              <input 
+                matInput 
+                formControlName="ibanMask"
+                placeholder="DE89 3704 0044 0532 0130 00"
+                mask="AA00 0000 0000 0000 0000 00"
+                [patterns]="ibanPatterns"
+                [dropSpecialCharacters]="false"
+                [showMaskTyped]="false"
+                style="font-family: 'Courier New', monospace; text-transform: uppercase;">
+              <mat-icon matSuffix>account_balance</mat-icon>
+              <mat-hint>Format: DE89 3704 0044 0532 0130 00</mat-hint>
+              <mat-error *ngIf="sampleForm.get('ibanMask')?.invalid && sampleForm.get('ibanMask')?.touched">
+                {{getErrorMessage('ibanMask')}}
+              </mat-error>
+            </mat-form-field>
           </div>
 
           <div class="checkbox-section">
