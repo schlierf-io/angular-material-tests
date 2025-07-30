@@ -1,8 +1,7 @@
-import { Component, Input, forwardRef, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, forwardRef, OnInit, OnDestroy, input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl, NG_VALIDATORS, Validator, AbstractControl, ValidationErrors, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -10,9 +9,8 @@ import { takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'app-iban-input',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatIconModule],
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule],
   templateUrl: './iban-input.html',
-  styleUrls: ['./iban-input.css'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -80,15 +78,15 @@ export class IbanInputComponent implements ControlValueAccessor, Validator, OnIn
   // Validator implementation
   validate(control: AbstractControl): ValidationErrors | null {
     const value = this.getUnformattedIban(control.value || '');
-    
+
     if (!value && this.required) {
       return { required: true };
     }
-    
+
     if (value && !this.isValidGermanIban(value)) {
       return { invalidIban: true };
     }
-    
+
     return null;
   }
 
@@ -134,7 +132,7 @@ export class IbanInputComponent implements ControlValueAccessor, Validator, OnIn
 
     // Only allow alphanumeric characters
     const isAlphaNumeric = /^[a-zA-Z0-9]$/.test(event.key);
-    
+
     if (!isAlphaNumeric) {
       event.preventDefault();
       return;
@@ -145,7 +143,7 @@ export class IbanInputComponent implements ControlValueAccessor, Validator, OnIn
       event.preventDefault();
       return;
     }
-    
+
     if (unformattedValue.length === 1 && event.key.toLowerCase() !== 'e') {
       event.preventDefault();
       return;
@@ -161,10 +159,10 @@ export class IbanInputComponent implements ControlValueAccessor, Validator, OnIn
   private formatIban(value: string): string {
     // Remove all non-alphanumeric characters
     const cleaned = value.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
-    
+
     // Add spaces every 4 characters
     const formatted = cleaned.replace(/.{4}/g, '$& ').trim();
-    
+
     // Limit to German IBAN length (22 characters + spaces)
     return formatted.substring(0, 27); // 22 chars + 5 spaces = 27
   }
@@ -176,12 +174,12 @@ export class IbanInputComponent implements ControlValueAccessor, Validator, OnIn
   private isValidGermanIban(iban: string): boolean {
     // Remove spaces and convert to uppercase
     const cleanIban = iban.replace(/\s/g, '').toUpperCase();
-    
+
     // Check if it starts with DE and has correct length
     if (!cleanIban.startsWith('DE') || cleanIban.length !== 22) {
       return false;
     }
-    
+
     // Validate IBAN checksum using mod-97 algorithm
     return this.validateIbanChecksum(cleanIban);
   }
@@ -189,7 +187,7 @@ export class IbanInputComponent implements ControlValueAccessor, Validator, OnIn
   private validateIbanChecksum(iban: string): boolean {
     // Move first 4 characters to the end
     const rearranged = iban.substring(4) + iban.substring(0, 4);
-    
+
     // Replace letters with numbers (A=10, B=11, ..., Z=35)
     let numericString = '';
     for (let i = 0; i < rearranged.length; i++) {
@@ -200,7 +198,7 @@ export class IbanInputComponent implements ControlValueAccessor, Validator, OnIn
         numericString += char;
       }
     }
-    
+
     // Calculate mod 97
     return this.mod97(numericString) === 1;
   }
